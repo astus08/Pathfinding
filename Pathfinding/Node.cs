@@ -146,6 +146,38 @@ namespace Pathfinding
             return this.right;
         }
 
+        public void setParent(Node n)
+        {
+            this.parent = n;
+        }
+
+        public Node getParent()
+        {
+            return this.parent;
+        }
+
+        public int getDistance()
+        {
+            return this.distance;
+        }
+
+        public void setFactor(int x)
+        {
+            this.factor = x;
+        }
+
+        public int getFactor()
+        {
+            return this.factor;
+        }
+
+        // When we have find the path, we go on the parent string
+        public Node traceBack()
+        {
+            this.onPath = true;
+            return this.parent;
+        }
+
         /// <summary>
         /// Reset the node by switching all the boolean variables to false
         /// </summary>
