@@ -120,9 +120,11 @@ namespace Pathfinding
             panel1.Invalidate();
         }
 
-        private void startButton_Click(object sender, EventArgs e) //A* algorithm
+        //This is the A* algorithm
+        private void startButton_Click(object sender, EventArgs e)
         {
-            foreach (Node nodetab in this.node)
+            Boolean calculated = false;
+            foreach (Node nodetab in this.node)     //Save starting and ending nodes
             {
                 if (nodetab.getEnd())
                 {
@@ -137,9 +139,39 @@ namespace Pathfinding
             {
                 nodetab.calcDistance(end);
             }
+            List<Node> closedList = new List<Node>();
+            List<Node> openList = new List<Node>();
+            openList.Add(this.start);
+            while (!calculated)
+            {
+                if (openList.Count == 0)
+                {
+                    break;
+                }
+                List<Node> oldOpen = new List<Node>();
+                int i=0;
+                foreach (Node node in openList)
+                {
+                    oldOpen.Add(node);
+                }
+                while (i < oldOpen.Count)
+                {
+                    System.Threading.Thread.Sleep(20);
+                    if (calculated)
+                        break;
+                    Node s = (Node)oldOpen[i];
+                    Node up = s.getUp();
+                    Node down = s.getDown();
+                    Node left = s.getLeft();
+                    Node right = s.getRight();
+
+                    ++i;
+                }
+            }
         }
 
-        private void resetButton_Click(object sender, EventArgs e)
+        // This function reset all nodes
+        private void resetButton_Click(object sender, EventArgs e)      
         {
             foreach (Node nodetab in this.node)
             {

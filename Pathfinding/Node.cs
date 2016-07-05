@@ -54,12 +54,7 @@ namespace Pathfinding
         {
             return this.used;
         }
-
-        public void Use()
-        {
-            this.used = true;
-        }
-
+        
         public bool isOnPath()
         {
             return this.onPath;
@@ -78,7 +73,13 @@ namespace Pathfinding
                 this.reset();
             }
             else
+            {
                 this.blocking = true;
+                this.end = false;
+                this.start = true;
+                this.used = false;
+                this.onPath = false;
+            }
         }
 
         public void setAsStart()
@@ -86,6 +87,8 @@ namespace Pathfinding
             this.blocking = false;
             this.end = false;
             this.start = true;
+            this.used = false;
+            this.onPath = false;
         }
 
         public void setAsEnd()
@@ -93,8 +96,59 @@ namespace Pathfinding
             this.blocking = false;
             this.start = false;
             this.end = true;
+            this.used = false;
+            this.onPath = false;
         }
 
+        public void setOnPath()
+        {
+            this.used = false;
+            this.blocking = false;
+            this.end = false;
+            this.start = false;
+            this.onPath = true;
+        }
+
+        public void use()
+        {
+            this.used = true;
+            this.blocking = false;
+            this.end = false;
+            this.start = false;
+            this.onPath = false;
+        }
+
+        public void setDirections(Node l, Node r, Node u, Node d)
+        {
+            this.left = l;
+            this.right = r;
+            this.up = u;
+            this.down = d;
+        }
+
+        public Node getUp()
+        {
+            return this.up;
+        }
+
+        public Node getDown()
+        {
+            return this.down;
+        }
+
+        public Node getLeft()
+        {
+            return this.left;
+        }
+
+        public Node getRight()
+        {
+            return this.right;
+        }
+
+        /// <summary>
+        /// Reset the node by switching all the boolean variables to false
+        /// </summary>
         public void reset()
         {
             this.blocking = false;
