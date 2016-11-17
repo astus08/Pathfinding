@@ -76,7 +76,7 @@ namespace Pathfinding
             {
                 this.blocking = true;
                 this.end = false;
-                this.start = true;
+                this.start = false;
                 this.used = false;
                 this.onPath = false;
             }

@@ -36,37 +36,6 @@ namespace Pathfinding
                     node[i, j] = new Node(i, j);
                 }
             }
-            for (i = 0; i < height; i++)
-            {
-                for (j = 0; j < width; j++)
-                {
-                    int u = j - 1;
-                    int d = j + 1;
-                    int l = i - 1;
-                    int r = i + 1;
-                    Node up = null;
-                    Node down = null;
-                    Node left = null;
-                    Node right = null;
-                    if (u >= 0 && u < height)
-                    {
-                        up = this.node[i, u];
-                    }
-                    if (d >= 0 && d < height)
-                    {
-                        down = this.node[i, d];
-                    }
-                    if (l >= 0 && l < width)
-                    {
-                        left = this.node[l, j];
-                    }
-                    if (r >= 0 && r < width)
-                    {
-                        right = this.node[r, j];
-                    }
-                    this.node[i, j].setDirections(left, right, up, down);
-                }
-            }
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -122,7 +91,8 @@ namespace Pathfinding
                         }
                     }
                     if (node[y, x].getStart() && !validation)
-                        node[y, x].setAsClicked();
+                        //node[y, x].setAsClicked();
+                        p=p;
                     else
                         node[y, x].setAsStart();
 
@@ -139,7 +109,8 @@ namespace Pathfinding
                         }
                     }
                     if (node[y, x].getEnd() && !validation)
-                        node[y, x].setAsClicked();
+                        //node[y, x].setAsClicked();
+                        p = p;
                     else
                         node[y, x].setAsEnd();
 
@@ -156,6 +127,9 @@ namespace Pathfinding
         {
             Boolean calculated = false;
             Boolean calculCalculated = false;
+            setNearsNodes();
+            List<Node> closedList = new List<Node>();
+            List<Node> openList = new List<Node>();
             foreach (Node nodetab in this.node)     //Save starting and ending nodes
             {
                 if (nodetab.getEnd())
@@ -164,29 +138,29 @@ namespace Pathfinding
                 }
                 if (nodetab.getStart())
                 {
-                    this.start = nodetab;
+                    openList.Add(nodetab);
                 }
             }
+
             foreach (Node nodetab in this.node)
             {
                 nodetab.calcDistance(end);
             }
-            List<Node> closedList = new List<Node>();
-            List<Node> openList = new List<Node>();
-            openList.Add(this.start);
+            
+            
             while (!calculated)
             {
                 calculCalculated = false;
                 if (openList.Count == 0)
-                {
                     break;
-                }
+
                 List<Node> oldOpen = new List<Node>();
-                int i=0;
+                
                 foreach (Node node in openList)
                 {
                     oldOpen.Add(node);
                 }
+                int i=0;
                 while (i < oldOpen.Count)
                 {
                     System.Threading.Thread.Sleep(20);
@@ -219,7 +193,7 @@ namespace Pathfinding
                         }
                         if (!(down == null || closedList.Contains(down) || down.getPermeability() || down.getParent() != null && down.getDistance() + s.getFactor() >= down.getFactor()))
                         {
-                            down.setFactor(s.getFactor() + up.getDistance());
+                            down.setFactor(s.getFactor() + down.getDistance());
                             down.setParent(s);
                             openList.Add(down);
                             down.use();
@@ -239,11 +213,7 @@ namespace Pathfinding
                             left.use();
                         }
                         closedList.Add(s);
-                        openList.Remove(s);
-                    }
-                    if (calculCalculated)
-                    {
-                        continue;
+                        openList.RemoveAt(openList.IndexOf(s));
                     }
                     if (calculated)
                     {
@@ -256,8 +226,56 @@ namespace Pathfinding
                     }
                     ++i;
                 }
+                if (calculCalculated)
+                {
+                    continue;
+                }
             }
             panel1.Invalidate();
+        }
+
+        private void setNearsNodes()
+        {
+            foreach (Node nodetab in this.node)
+            {
+                if ((nodetab.isOnPath() || nodetab.isUsed()) && !(nodetab.getStart()))
+                {
+                    nodetab.reset();
+                }
+                
+            }
+            int i, j;
+            for (i = 0; i < height; i++)
+            {
+                for (j = 0; j < width; j++)
+                {
+                    int u = j - 1;
+                    int d = j + 1;
+                    int l = i - 1;
+                    int r = i + 1;
+                    Node up = null;
+                    Node down = null;
+                    Node left = null;
+                    Node right = null;
+                    if (u >= 0 && u < height)
+                    {
+                        up = this.node[i, u];
+                    }
+                    if (d >= 0 && d < height)
+                    {
+                        down = this.node[i, d];
+                    }
+                    if (l >= 0 && l < width)
+                    {
+                        left = this.node[l, j];
+                    }
+                    if (r >= 0 && r < width)
+                    {
+                        right = this.node[r, j];
+                    }
+                    this.node[i, j].setDirections(left, right, up, down);
+                }
+            }
         }
 
         // This function reset all nodes
@@ -268,6 +286,7 @@ namespace Pathfinding
                 nodetab.reset();
             }
             listBox1.SetSelected(1, true);
+            setNearsNodes();
             panel1.Invalidate();
         }
 
